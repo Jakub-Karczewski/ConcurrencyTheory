@@ -3,7 +3,6 @@ from collections import deque
 no_lines = int(input())
 appeared = [-1] * 26
 vert_to_char = [-1] * 26
-res = ""
 
 D = [[0 for _ in range(no_lines)] for _ in range(no_lines)]
 for i in range(no_lines):
@@ -13,7 +12,6 @@ prod = [[[], []] for _ in range(26)]
 count = 0
 for i in range(no_lines):
     res_i = str(input())
-    #res += res_i
     first_char = ord(res_i[0]) - ord('a')
     if appeared[first_char] == -1:
         appeared[first_char] = count
@@ -62,8 +60,6 @@ def BFS_with_deletion(start_vertex, Graph):
             Graph[start_vertex][j][1] = False
 
 
-#print(res)
-
 print("Podaj slowo:")
 vertexes = []
 ver_list = str(input())
@@ -91,13 +87,12 @@ for i in range(m):
             inner_edges[x] += 1;
             print(f"{i+1} -> {x+1}")
 
-print("Inner edges:")
-print(inner_edges)
+#print("Inner edges:")
+#print(inner_edges)
 
 for k in range(m):
     Fi = []
     found = 0
-    #print(inner_edges)
     for i in range(m):
         if not in_class[i] and inner_edges[i] == 0:
             found = 1
@@ -115,8 +110,10 @@ for k in range(m):
 print("Foata classes:")
 for i in range(m):
     if len(Foata[i]):
-        print(f"{Foata[i]}", end=' ')
+        print("[", end=' ')
+        for x in Foata[i]:
+            print(f"{ver_list[x]}", end = ' ')
+        print("]", end=' ')
     else:
         break
 
-#print(vertexes)
