@@ -1,8 +1,5 @@
-Do uruchomienia niezbędne jest zainstalowanie biblioteki Graphvitz,   
-można to zrobić za pomocą pip-a.   
-Aby przetestować działanie programu należy
-uruchomić main.py i wpisać zadany ciąg operacji
-w podanym na przykładzie formacie:     
+Do uruchomienia niezbędne jest zainstalowanie biblioteki Graphvitz, można to zrobić za pomocą pip-a.   
+Aby przetestować działanie programu należy uruchomić plik main.ipynb i  wpisać do pliku input.txt dane w podanym na przykładzie formacie:     
 
 6  
 x := x + 1   
