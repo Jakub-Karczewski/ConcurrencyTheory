@@ -22,8 +22,7 @@ Na sam koniec podaje się słowo w, oznaczające przykładowe wykonanie sekwencj
 Dane należy wpisać do pliku input_version2.txt w formacie:   
 1 linia powinna zawierać ilość operacji - n   
 2 linia ilość zmiennych - m   
-Dalej następuje n linii takich, że na początku podajemy ilość zmiennych występujących po prawej stronie operacji, w kolejnej linii podajemy zmienną występującą po lewej stronie,   
-a w następnej podajemy listę zmiennych występujących po prawej stronie, oddzielonych spacjami. Zmienne podajemy jako zwykłe liczby.   
+Dalej następuje n linii takich, że na początku podajemy ilość zmiennych występujących po prawej stronie operacji, w kolejnej linii podajemy zmienną występującą po lewej stronie, a w następnej podajemy listę zmiennych występujących po prawej stronie, oddzielonych spacjami. Zmienne podajemy jako zwykłe liczby.   
 Na sam koniec podajemy przykładowe słowo, w postaci liczb oddzielonych spacjami.   
 Przykład tego formatu odpowiadający temu powyżej:   
 6   
