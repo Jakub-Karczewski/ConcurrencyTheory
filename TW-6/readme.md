@@ -1,5 +1,7 @@
 Do uruchomienia niezbędne jest zainstalowanie biblioteki Graphvitz, można to zrobić za pomocą pip-a.   
-Aby przetestować działanie programu należy uruchomić plik main.ipynb. Następnie dane można wprowadzić na 2 sposoby.
+Aby przetestować działanie programu należy uruchomić plik main.ipynb. Następnie dane można wprowadzić na 2 sposoby.   
+To, z którego będziemy korzystać należy zapisać w zmiennej
+version, numerowanie jest od 0.   
 # I sposób
 Dane należy wpisać do pliku input.txt dane w podanym na przykładzie formacie:
 
