@@ -23,46 +23,50 @@ public class Gauss {
         }
     }
 
-    public void search_update(ABC t, int a, int b, int start, int ii){
-        for(int j = start; j >= 0; j--){
-            op op2 = ops_list.get(j);
-            if(op2.t == t && op2.data[1] == a && op2.data[2] == b){
-                D[j][ii] = 1;
-                break;
-            }
-        }
+    int calc_dist(int a, int b){
+        int dim_ = dim-1;
+        int dist = (1 + 2 * (dim_ - a + 1)) * (b - a - 1);
+        dist += (1 + 2 * (dim_ - (a-1) + 1)) * (dim_ - (a-1));
+        return dist;
+
     }
 
     public void find_dependencies(){
-        n = ops_list.size();
+        this.n = ops_list.size();
         D = new int[n][n];
         int last_A = -1;
         for(int i = 0; i < n; i++){
-
             op op1 = ops_list.get(i);
             int a = op1.data[0];
             int b = op1.data[1];
             int c = op1.data[2];
-
             if(op1.t == ABC.A){
-                if(op1.data[0] != 0) {
-                    search_update(ABC.C, a, a, i - 1, i);
-                    search_update(ABC.C, a, b, i - 1, i);
-                }
                 last_A = i;
-            }
-
-            else if(op1.t == ABC.B){
-                D[last_A][i] = 1;
-                if(op1.data[0] != op1.data[1]) {
-                    search_update(ABC.C, b, a, i - 1, i);
+                if(a != 0){
+                    int dist1 = calc_dist(a, b) - 4;
+                    int dist2 = dist1 - (b-a) * ((dim-1 - (a-1) + 1) * 2 + 1);
+                    System.out.println("A: (" + a + " " + b + ") " + i + " " + dist1 + " , " + dist2);
+                    D[i - dist2][i] = 1; //c(a-1, a, b)
+                    D[i - dist1][i] = 1; //C(a-1, a, a)
                 }
             }
-
+            else if(op1.t == ABC.B) {
+                D[last_A][i] = 1;
+                if(op1.data[0] != op1.data[1] && a != 0) {
+                    int dist3 = (b-a) * 2 + 1; //wracamy do A(a, c)
+                    dist3 += calc_dist(a, c);
+                    dist3 -= (b - (a-1)) * 2;
+                    D[i - dist3][i] = 1;
+                }
+            }
             else if (op1.t == ABC.C){
                 D[i-1][i] = 1;
-                if (op1.data[0] != op1.data[1]) {
-                    search_update(ABC.C, b, c, i - 1, i);
+                if (op1.data[0] != op1.data[1] && a != 0) {
+                    int dist4 = (b-a) * 2 + 2; //wracamy do A(a, c)
+                    dist4 += (1 + 2 * (dim-1 - a + 1)) * (c - a - 1); // schodzimy do A(a-1, dim)
+                    dist4 += (1 + 2 * (dim-1 - a + 1)) * (dim-1 - c + 1); //schodzimy do A(a-1, c)
+                    dist4 -= (b - (a-1)) * 2;
+                    D[i - dist4][i] = 1;
                 }
             }
         }
@@ -95,7 +99,7 @@ public class Gauss {
     }
 
     public void getFoataClasses(){
-
+        System.out.println("n: " + n);
         int[] inside = new int[n];
         int[] vis = new int[n];
 
@@ -106,6 +110,10 @@ public class Gauss {
                 }
             }
         }
+         for (int i = 0; i < n; i++){
+          System.out.print(inside[i] + " ");
+         }
+         System.out.print("\n");
 
         ArrayList<ArrayList<Integer>> Foata = new ArrayList<>();
         int id = 1;
@@ -145,9 +153,9 @@ public class Gauss {
             System.out.print("[ ");
             for (Integer y: L){
                 op op1 = ops_list.get(y);
-                System.out.print(op1.t.toString() + "," + op1.data[0] + "," + op1.data[1]);
+                System.out.print(op1.t.toString() + "," + (op1.data[0]+1) + "," + (op1.data[1]+1));
                 if(op1.data[2] != -1){
-                    System.out.print("," + op1.data[2]);
+                    System.out.print("," + (op1.data[2]+1));
                 }
                 System.out.print(" ");
             }
