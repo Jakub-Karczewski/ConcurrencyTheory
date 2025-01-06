@@ -2,24 +2,68 @@ package org.example;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class Gauss {
     private int dim;
     private int n;
-    private ArrayList<op> ops_list = new ArrayList<>();
+    private int type;
+    private ArrayList<op> operations_list = new ArrayList<>();
+
+    private ArrayList<op> operations_ordered = new ArrayList<>();
+
+    private ExecutorService executor = Executors.newFixedThreadPool(8);
     int [][] D;
-    public Gauss(int dim){
-        this.dim = dim;
+    public Gauss(float[][] arr, int type){
+        this.dim = arr.length;
+        this.type = type;
+        op.Matrix = arr;
+        op.Multres = new float[dim+1][dim+1];
+        op.Coeff = new float[dim][dim];
     }
     public void GenerateOperations(){
+
         for (int i = 0; i < dim; i++){
             for (int j = i+1; j < dim; j++){
-                ops_list.add(new op(ABC.A, i, j, -1));
+                operations_list.add(new op(ABC.A, i, j, -1));
                 for(int k = i; k < dim; k++){
-                    ops_list.add(new op(ABC.B, i, k, j));
-                    ops_list.add(new op(ABC.C, i, k, j));
+                    operations_list.add(new op(ABC.B, i, k, j));
+                    operations_list.add(new op(ABC.C, i, k, j));
                 }
             }
+        }
+
+        for (int i = 0; i < dim; i++){
+            for (int j = i+1; j < dim; j++){
+                operations_ordered.add(new op(ABC.A, i, j, -1));
+            }
+            for (int j = i+1; j < dim; j++){
+                for(int k = i; k < dim+type; k++){
+                    operations_ordered.add(new op(ABC.B, i, k, j));
+                }
+                for(int k = i; k < dim+type; k++) {
+                    operations_ordered.add(new op(ABC.C, i, k, j));
+                }
+            }
+        }
+    }
+
+    public void ExecuteGauss() throws InterruptedException, ExecutionException {
+        List<Future<?>> futures = new ArrayList<Future<?>>();
+        int jd = operations_list.size();
+        op prev_op = null;
+        for(op op1: operations_ordered){
+            if(prev_op != null && prev_op.t != op1.t){
+                for(Future<?> future : futures)
+                {
+                    future.get();
+                }
+                futures.clear();
+            }
+            Future<?> f = executor.submit(op1);
+            futures.add(f);
+            prev_op = op1;
         }
     }
 
@@ -32,11 +76,15 @@ public class Gauss {
     }
 
     public void find_dependencies(){
-        this.n = ops_list.size();
+
+        //Wygenerowanie i wypisanie operacji(ta funkcja + funkcja "getFoataClasses_fromDependencies" ) działają dla macierzy kwadratowych
+        // Jeśli chodzi o znalezienie rozwiązania układu równań, to podaje się macierz prostokątną o wymiarach n na n+1
+
+        this.n = operations_list.size();
         D = new int[n][n];
         int last_A = -1;
         for(int i = 0; i < n; i++){
-            op op1 = ops_list.get(i);
+            op op1 = operations_list.get(i);
             int a = op1.data[0];
             int b = op1.data[1];
             int c = op1.data[2];
@@ -45,7 +93,6 @@ public class Gauss {
                 if(a != 0){
                     int dist1 = calc_dist(a, b) - 4;
                     int dist2 = dist1 - (b-a) * ((dim-1 - (a-1) + 1) * 2 + 1);
-                    System.out.println("A: (" + a + " " + b + ") " + i + " " + dist1 + " , " + dist2);
                     D[i - dist2][i] = 1; //c(a-1, a, b)
                     D[i - dist1][i] = 1; //C(a-1, a, a)
                 }
@@ -98,7 +145,7 @@ public class Gauss {
         }
     }
 
-    public void getFoataClasses(){
+    public void getFoataClasses_fromDependencies(){
         System.out.println("n: " + n);
         int[] inside = new int[n];
         int[] vis = new int[n];
@@ -110,10 +157,13 @@ public class Gauss {
                 }
             }
         }
-         for (int i = 0; i < n; i++){
+
+        /*
+        for (int i = 0; i < n; i++){
           System.out.print(inside[i] + " ");
          }
          System.out.print("\n");
+         */
 
         ArrayList<ArrayList<Integer>> Foata = new ArrayList<>();
         int id = 1;
@@ -152,7 +202,7 @@ public class Gauss {
         for (ArrayList<Integer> L: Foata){
             System.out.print("[ ");
             for (Integer y: L){
-                op op1 = ops_list.get(y);
+                op op1 = operations_list.get(y);
                 System.out.print(op1.t.toString() + "," + (op1.data[0]+1) + "," + (op1.data[1]+1));
                 if(op1.data[2] != -1){
                     System.out.print("," + (op1.data[2]+1));
@@ -162,4 +212,5 @@ public class Gauss {
             System.out.print("]\n");
         }
     }
+
 }
