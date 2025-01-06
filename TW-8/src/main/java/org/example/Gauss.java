@@ -68,7 +68,7 @@ public class Gauss {
     }
 
     int calc_dist(int a, int b){
-        int dim_ = dim-1;
+        int dim_ = dim-1; // ostatni element to dim-1
         int dist = (1 + 2 * (dim_ - a + 1)) * (b - a - 1);
         dist += (1 + 2 * (dim_ - (a-1) + 1)) * (dim_ - (a-1));
         return dist;
@@ -110,7 +110,7 @@ public class Gauss {
                 D[i-1][i] = 1;
                 if (op1.data[0] != op1.data[1] && a != 0) {
                     int dist4 = (b-a) * 2 + 2; //wracamy do A(a, c)
-                    dist4 += (1 + 2 * (dim-1 - a + 1)) * (c - a - 1); // schodzimy do A(a-1, dim)
+                    dist4 += (1 + 2 * (dim-1 - a + 1)) * (c - a - 1); // schodzimy do A(a-1, dim-1)
                     dist4 += (1 + 2 * (dim-1 - a + 1)) * (dim-1 - c + 1); //schodzimy do A(a-1, c)
                     dist4 -= (b - (a-1)) * 2;
                     D[i - dist4][i] = 1;
